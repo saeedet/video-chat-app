@@ -3,8 +3,15 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { SocketContext } from "../SocketContext";
 
 const Options = ({ children }) => {
-  const { me, callAccepted, name, setName, callEnded, leaveCall, callUser } =
-    useContext(SocketContext);
+  const {
+    socketId,
+    callAccepted,
+    name,
+    setName,
+    callEnded,
+    leaveCall,
+    callUser,
+  } = useContext(SocketContext);
   const [idToCall, setIdToCall] = useState("");
 
   return (
@@ -20,7 +27,7 @@ const Options = ({ children }) => {
             className="bg-transparent outline-none w-full"
           />
         </div>
-        <CopyToClipboard text={me}>
+        <CopyToClipboard text={socketId}>
           <button className="bg-blue-500 w-full py-1 rounded-md shadow-md text-white font-semibold">
             COPY YOUR ID
           </button>

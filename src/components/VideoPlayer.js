@@ -5,12 +5,12 @@ const VideoPlayer = () => {
   const { name, callAccepted, myVideo, userVideo, callEnded, stream, call } =
     useContext(SocketContext);
   return (
-    <div className="flex space-x-4 justify-center ">
+    <div className="flex space-x-4 justify-center w-full ">
       {stream && (
         <div className="bg-white w-1/2 rounded-full">
           <h3 className="w-full flex justify-center">{name || "User"}</h3>
           <video
-            className="rounded-full"
+            className="rounded-full w-full"
             playsInline
             muted
             autoPlay
@@ -20,11 +20,9 @@ const VideoPlayer = () => {
       )}
       {callAccepted && !callEnded && (
         <div className="bg-white w-1/2  rounded-full">
-          <h3 className="w-full flex justify-center">
-            {call.name || "User 2"}
-          </h3>
+          <h3 className="w-full flex justify-center">{call.name || "User"}</h3>
           <video
-            className="rounded-full"
+            className="rounded-full w-full"
             playsInline
             autoPlay
             ref={userVideo}

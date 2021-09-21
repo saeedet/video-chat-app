@@ -4,75 +4,89 @@ import Peer from "simple-peer";
 
 const SocketContext = createContext();
 
-const socket = io("http://localhost:5000");
+//initialize the socket connection between user and the server
+// const socket = io("http://localhost:5000/");
+const socket = io("https://et-video-chat.herokuapp.com/");
 
 const ContextProvider = ({ children }) => {
+  //states
   const [stream, setStream] = useState(null);
-  const [me, setMe] = useState("");
+  const [socketId, setSocketId] = useState("");
   const [call, setCall] = useState({});
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [name, setName] = useState("");
-
+  //refs
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
 
   useEffect(() => {
+    //ask user permission to use video and audio
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((currentStream) => {
+        //set the stream state to the user's video stream
         setStream(currentStream);
-        console.log(currentStream);
-        myVideo.current.srcObject = currentStream || null;
+        // populate myVideo ref to show it on peer1 frontend
+        myVideo.current.srcObject = currentStream;
       });
 
-    socket.on("me", (id) => setMe(id));
+    // Register a handler for "socketid" event
+    socket.on("socketid", (id) => setSocketId(id));
 
-    socket.on("calluser", ({ from, name: callerName, signal }) => {
+    // Register a handler for "usercalling" event to get the caller info
+    socket.on("usercalling", ({ signal, from, name: callerName }) => {
       setCall({ isReceivedCall: true, from, name: callerName, signal });
     });
   }, []);
 
+  const callUser = (idToCall) => {
+    const peer = new Peer({ initiator: true, trickle: false, stream });
+
+    //send signaling data to the remote peer.
+    peer.on("signal", (data) => {
+      //emit "calluser" event to the socket
+      socket.emit("calluser", {
+        userToCall: idToCall,
+        signalData: data,
+        from: socketId,
+        name,
+      });
+    });
+
+    //get the remote peer video stream and populate the related ref to show it on frontend
+    peer.on("stream", (currentStream) => {
+      userVideo.current.srcObject = currentStream;
+    });
+
+    // Register a handler for "callaccepted" event
+    socket.on("callaccepted", (signal) => {
+      setCallAccepted(true);
+      peer.signal(signal);
+    });
+    connectionRef.current = peer;
+  };
+
   const answerCall = () => {
     setCallAccepted(true);
 
+    //Create a new WebRTC peer connection.
     const peer = new Peer({ initiator: false, trickle: false, stream });
 
+    //send signaling data to the remote peer.
     peer.on("signal", (data) => {
+      //emit "answercall" event to the socket
       socket.emit("answercall", { signal: data, to: call.from });
     });
 
+    //get the remote peer video stream and populate the related ref to show it on frontend
     peer.on("stream", (currentStream) => {
       userVideo.current.srcObject = currentStream;
     });
 
     peer.signal(call.signal);
 
-    connectionRef.current = peer;
-  };
-
-  const callUser = (id) => {
-    const peer = new Peer({ initiator: true, trickle: false, stream });
-
-    peer.on("signal", (data) => {
-      socket.emit("calluser", {
-        userToCall: id,
-        signalData: data,
-        from: me,
-        name,
-      });
-    });
-
-    peer.on("stream", (currentStream) => {
-      userVideo.current.srcObject = currentStream;
-    });
-
-    socket.on("callaccepted", (signal) => {
-      setCallAccepted(true);
-
-      peer.signal(signal);
-    });
     connectionRef.current = peer;
   };
 
@@ -93,7 +107,7 @@ const ContextProvider = ({ children }) => {
         name,
         setName,
         callEnded,
-        me,
+        socketId,
         callUser,
         leaveCall,
         answerCall,
