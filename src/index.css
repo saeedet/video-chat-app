@@ -3,10 +3,19 @@
 @tailwind utilities;
 
 body {
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+  /* background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url(https://images.pexels.com/photos/3631430/pexels-photo-3631430.jpeg?auto=compress&cs=tinysrgb&h=650&w=940);
 
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size: cover;
+  background-size: cover; */
+
+  /* --tw-gradient-to: rgba(132, 237, 193, 0.53333);
+  --tw-gradient-from: rgba(121, 192, 255, 0.53333);
+  --tw-gradient-stops: var(--tw-gradient-from),
+    var(--tw-gradient-to, rgba(121, 192, 255, 0));
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); */
+  /* filter: blur(6rem); */
+
+  background-color: rgb(27, 31, 36);
 }

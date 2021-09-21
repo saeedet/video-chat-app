@@ -1,18 +1,16 @@
 import React from "react";
-import Notifications from "./components/Notifications";
-import Options from "./components/Options";
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
 import VideoPlayer from "./components/VideoPlayer";
 
 const App = () => {
   return (
-    <div className=" flex flex-col h-screen items-center  space-y-5">
-      <div className="bg-white w-1/3 flex justify-center items-center py-1 rounded-md border-2 border-black">
-        <h1 className="font-bold text-3xl">Private Video Chat</h1>
+    <div className="flex h-screen w-screen">
+      <Sidebar />
+      <div className="flex flex-col items-center flex-grow">
+        <Header />
+        <VideoPlayer />
       </div>
-      <VideoPlayer />
-      <Options>
-        <Notifications />
-      </Options>
     </div>
   );
 };
