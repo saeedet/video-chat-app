@@ -5,8 +5,8 @@ import Peer from "simple-peer";
 const SocketContext = createContext();
 
 //initialize the socket connection between user and the server
-const socket = io("http://localhost:5000/");
-// const socket = io("https://et-video-chat.herokuapp.com/");
+// const socket = io("http://localhost:5000/");
+const socket = io("https://et-video-chat.herokuapp.com/");
 
 const ContextProvider = ({ children }) => {
   //states
