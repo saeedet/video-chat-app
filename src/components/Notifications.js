@@ -9,7 +9,7 @@ const Notifications = () => {
       {call.isReceivedCall && !callAccepted && (
         <div className="flex flex-col space-y-5 justify-center">
           <p className="text-white">
-            {call.name ? call.name : "Anonymous"} is calling..
+            {call.callerName ? call.callerName : "Anonymous"} is calling..
           </p>
           <PhoneIncomingIcon className="h-8 text-red-900 animate-ping" />
           <button

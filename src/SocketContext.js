@@ -5,8 +5,8 @@ import Peer from "simple-peer";
 const SocketContext = createContext();
 
 //initialize the socket connection between user and the server
-// const socket = io("http://localhost:5000/");
-const socket = io("https://et-video-chat.herokuapp.com/");
+const socket = io("http://localhost:5000/");
+// const socket = io("https://et-video-chat.herokuapp.com/");
 
 const ContextProvider = ({ children }) => {
   //states
@@ -36,8 +36,8 @@ const ContextProvider = ({ children }) => {
     socket.on("socketid", (id) => setSocketId(id));
 
     // Register a handler for "usercalling" event to get the caller info
-    socket.on("usercalling", ({ signal, from, name: callerName }) => {
-      setCall({ isReceivedCall: true, from, name: callerName, signal });
+    socket.on("usercalling", ({ signal, callerId, callerName }) => {
+      setCall({ isReceivedCall: true, callerId, callerName, signal });
     });
   }, []);
 
@@ -50,8 +50,8 @@ const ContextProvider = ({ children }) => {
       socket.emit("calluser", {
         userToCall: idToCall,
         signalData: data,
-        from: socketId,
-        name,
+        callerId: socketId,
+        callerName: name,
       });
     });
 
@@ -61,9 +61,10 @@ const ContextProvider = ({ children }) => {
     });
 
     // Register a handler for "callaccepted" event
-    socket.on("callaccepted", (signal) => {
+    socket.on("callaccepted", (data) => {
       setCallAccepted(true);
-      peer.signal(signal);
+      peer.signal(data.signal);
+      setCall((prev) => ({ ...prev, callerName: data.peer2Name }));
     });
     connectionRef.current = peer;
   };
@@ -77,7 +78,11 @@ const ContextProvider = ({ children }) => {
     //send signaling data to the remote peer.
     peer.on("signal", (data) => {
       //emit "answercall" event to the socket
-      socket.emit("answercall", { signal: data, to: call.from });
+      socket.emit("answercall", {
+        signal: data,
+        callerId: call.callerId,
+        name: name,
+      });
     });
 
     //get the remote peer video stream and populate the related ref to show it on frontend

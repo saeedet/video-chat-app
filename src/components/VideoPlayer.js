@@ -24,7 +24,7 @@ const VideoPlayer = () => {
         <div className=" p-3 rounded-md bg-blue-400">
           <video className="rounded-md" playsInline autoPlay ref={userVideo} />
           <h3 className="flex justify-center text-white font-bold text-xl mt-2">
-            {call.name || "User"}
+            {call.callerName || "User"}
           </h3>
         </div>
       )}

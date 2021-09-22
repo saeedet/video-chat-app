@@ -1,10 +1,6 @@
 import React, { useContext, useState } from "react";
 import { SocketContext } from "../SocketContext";
-import {
-  PhoneOutgoingIcon,
-  PhoneMissedCallIcon,
-  SparklesIcon,
-} from "@heroicons/react/solid";
+import { PhoneOutgoingIcon, PhoneMissedCallIcon } from "@heroicons/react/solid";
 
 const Call = () => {
   const { callAccepted, callEnded, leaveCall, callUser } =
